@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Para Ti 💜</title>
+
+<style>
+
+body{
+margin:0;
+background:radial-gradient(circle at bottom,#020024,#000000 70%);
+color:white;
+font-family:Arial;
+text-align:center;
+overflow:hidden;
+}
+
+.container{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+z-index:2;
+width:90%;
+max-width:500px;
+}
+
+h1{
+font-size:30px;
+}
+
+button{
+padding:14px 28px;
+font-size:18px;
+border:none;
+border-radius:30px;
+background:#a855f7;
+color:white;
+cursor:pointer;
+margin-top:10px;
+}
+
+button:hover{
+background:#9333ea;
+}
+
+#carta{
+display:none;
+margin-top:20px;
+font-size:16px;
+line-height:1.6;
+}
+
+canvas{
+position:absolute;
+top:0;
+left:0;
+}
+
+.corazonMouse{
+position:absolute;
+color:#c084fc;
+font-size:18px;
+pointer-events:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>💜 Feliz Día de la Mujer 💜</h1>
+
+<h2>KAROL</h2>
+
+<button onclick="mostrarCarta()">Abrir carta 💌</button>
+
+<button onclick="lanzarFuego()">Ver sorpresa 🎆</button>
+
+<div id="carta">
+Yo sé que esto no cambia nada de lo que pasó ni la decisión que yo tomé,  
+pero sabes algo… a ti te amo como ninguna otra mujer me ha hecho sentir.  
+
+Tú te ganaste mi amor de una forma que ni te imaginas.  
+Y aunque sé que lo hecho está y no se puede cambiar lo que hice,  
+mi amor por ti sigue aquí, intacto.
+
+No te puedo dejar atrás,  
+no puedo borrar algo que nunca ha salido de mi corazón.  
+
+Porque mi amor por ti, en vez de irse, solo aumenta con el tiempo.  
+Siempre me ha pasado contigo…  
+
+No puedo dejar de verte con los ojos de amor con los que siempre te he visto.  
+
+Y en el fondo de mi corazón,  
+solo espero que tú todavía sigas sintiendo lo mismo. 💜
+</div>
+
+</div>
+
+<audio autoplay loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9cfd4a.mp3" type="audio/mp3">
+</audio>
+
+<canvas id="canvas"></canvas>
+
+<script>
+
+const canvas = document.getElementById("canvas")
+const ctx = canvas.getContext("2d")
+
+function ajustarPantalla(){
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+}
+
+ajustarPantalla()
+window.addEventListener("resize", ajustarPantalla)
+
+let particulas = []
+let corazonParticulas = []
+let tiempoTeAmo = 0
+let estrellas = []
+
+for(let i=0;i<200;i++){
+estrellas.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+size:Math.random()*2
+})
+}
+
+function crearCorazonGrande(){
+
+let centerX = canvas.width/2
+let centerY = canvas.height/2
+
+for(let t=0; t<Math.PI*2; t+=0.04){
+
+let x = 16*Math.pow(Math.sin(t),3)
+let y = 13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)
+
+corazonParticulas.push({
+x:centerX + x*30,
+y:centerY - y*30
+})
+
+}
+
+}
+
+crearCorazonGrande()
+
+function crearCorazon(x,y){
+
+for(let i=0;i<120;i++){
+
+particulas.push({
+x:x,
+y:y,
+vx:(Math.random()-0.5)*10,
+vy:(Math.random()-0.5)*10,
+life:150
+})
+
+}
+
+}
+
+function lanzarFuego(){
+
+let x = Math.random()*canvas.width
+let y = Math.random()*canvas.height/2
+
+crearCorazon(x,y)
+
+tiempoTeAmo = 200
+
+}
+
+function dibujar(){
+
+for(let i=0;i<estrellas.length;i++){
+
+let s = estrellas[i]
+
+ctx.fillStyle="white"
+ctx.beginPath()
+ctx.arc(s.x,s.y,s.size,0,Math.PI*2)
+ctx.fill()
+
+}   
+
+ctx.fillStyle="rgba(0,0,0,0.2)"
+ctx.fillRect(0,0,canvas.width,canvas.height)
+
+for(let i=0;i<particulas.length;i++){
+
+let p = particulas[i]
+
+ctx.fillStyle="#c084fc"
+ctx.beginPath()
+ctx.arc(p.x,p.y,6,0,Math.PI*2)
+ctx.fill()
+
+p.x += p.vx
+p.y += p.vy
+p.life--
+
+}
+
+particulas = particulas.filter(p=>p.life>0)
+
+for(let i=0;i<corazonParticulas.length;i++){
+
+let p = corazonParticulas[i]
+
+ctx.fillStyle="#c084fc"
+ctx.beginPath()
+ctx.arc(p.x,p.y,3,0,Math.PI*2)
+ctx.fill()
+
+}
+
+if(tiempoTeAmo > 0){
+
+ctx.fillStyle="#c084fc"
+ctx.font="bold 50px Arial"
+ctx.textAlign="center"
+ctx.fillText("TE AMO 💜", canvas.width/2, canvas.height/2)
+
+tiempoTeAmo--
+
+}
+
+requestAnimationFrame(dibujar)
+
+}
+
+dibujar()
+
+function mostrarCarta(){
+
+document.getElementById("carta").style.display="block"
+
+}
+
+document.addEventListener("mousemove",function(e){
+
+let corazon = document.createElement("div")
+
+corazon.innerHTML="💜"
+
+corazon.className="corazonMouse"
+
+corazon.style.left=e.pageX+"px"
+corazon.style.top=e.pageY+"px"
+
+document.body.appendChild(corazon)
+
+setTimeout(()=>{
+
+corazon.remove()
+
+},800)
+
+})
+
+</script>
+
+</body>
+</html>
